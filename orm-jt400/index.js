@@ -16,16 +16,16 @@ function mappedSchema(){
     return loja;
 };
 
-function findById(mappedSchema){
-    return crudSupport.findById(mappedSchema);
+async function findById(mappedSchema){
+    return await crudSupport.findById(mappedSchema);
 }
 
 logger('iniciando teste...');
 
 var loja = mappedSchema();
 loja.id.value = 100;
-loja.descricao.value = 'IBI';
 
-const data = findById(loja);
+findById(loja).then(data =>{
+    console.log(data);
+});
 
-console.log(data);
