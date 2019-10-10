@@ -11,10 +11,16 @@ module.exports = {
 
     try {
 
-      const config = {
+/*      const config = {
         localUser: params.user ? params.user : process.env.DB2AS400_USER,
         localHost: params.host ? params.host : process.env.DB2AS400_HOST,
         localPasswd: params.password ? params.password : process.env.DB2AS400_PASSWD
+      }*/
+
+      const config = {
+        user: 'br3pcg',
+        host: '10.16.0.162',
+        password: 'cea12345'
       }
 
       pool = db2AS400.pool(config);

@@ -13,33 +13,37 @@ module.exports = {
    */
   buildSelectByIdScript(mappedSchema) {
 
-    var sql = '';
 
     try {
 
-      const attributes = Object.keys(mappedSchema);
-      const attributeValues = [];
+      let sql = ' ';
 
-      for (let i = 0; i = 0; i++) { // make de first line of select statement
-        objectAux = mappedSchema[attributes[0]];
+      var attributes = Object.keys(mappedSchema).filter((element)=>{
+        return (element !== '__entity' && element !== '__schema');
+      });
+
+      var attributeValues = [];
+
+      for (let i = 0; i < 1; i++) { // make de first line of select statement
+        let objectAux = mappedSchema[attributes[0]];
         attributeValues.push(objectAux); // store the attribute values to format where clause
 
-        sql.concat('select ', objectAux.fieldName);
-        sql.concat(' ', ` as "${Object.keys(objectAux)[0]}"`); // concat the name of attribute to simplify rowmap process
+       sql += _.join(['select', objectAux.fieldName], ' ');
+       sql += _.join([' ', `as "${attributes[0]}"`], ' ');
       }
 
       if (attributes.length > 1) { //format additional columns, with all attributes from mappedSchema object
         for (let i = 1; i < attributes.length; i++) {
-          objectAux = mappedSchema[attributes[i]];
+          let objectAux = mappedSchema[attributes[i]];
           attributeValues.push(objectAux); // store the attribute values to format where clause
 
-          sql.concat('\n      ,', objectAux.fieldName);
-          sql.concat(' ', ` as "${Object.keys(objectAux)[0]}"`); // concat the name of attribute to simplify rowmap process
+          sql += _.join(['\n     ,', objectAux.fieldName], ' ');
+          sql += _.join([' ', ` as "${attributes[i]}"`], ' ');
         }
       }
 
-      sql.concat('\n  ', `from ${mappedSchema.__schema ? mappedSchema.__schema + '.' : ''}${mappedSchema.__entity}`); //
-      sql.concat('\n ', 'where 1 = 1'); // prepare for add where clause
+      sql += _.join([' ', '\n ', `from ${mappedSchema.__schema ? mappedSchema.__schema + '.' : ''}${mappedSchema.__entity}`], ' ');
+      sql += _.join([' ', '\n', 'where 1 = 1'],' ');
 
       /**
        * format where clause using ID defined on mappedSchema
@@ -50,9 +54,9 @@ module.exports = {
 
       var variables = [];
 
-      for (primaryKey in primaryKeys) {
-        sql.concat('\n   and ', `${primaryKey.fieldName} = ? `)
-        variables.push(primaryKey.value);
+      for(var i = 0; i < primaryKeys.length; i++ ) { 
+        sql += _.join([' ', '\n  and ', `${primaryKeys[i].fieldName} = ? `], ' ');
+        variables.push(primaryKeys[i].value);
       }
 
       const statement = {
