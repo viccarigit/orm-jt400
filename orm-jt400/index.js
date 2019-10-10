@@ -7,10 +7,10 @@ function logger(message){
 function mappedSchema(){
 
     const loja = {
-        __entity: 'CO000T',
-        __schema: 'PROD',
-        id: {fieldName: 'CD_FL', isId: true},
-        descricao: {fieldName: 'NO_FL'}
+        __entity: 'store',
+        __schema: 'development',
+        id: {fieldName: 'store_id', isId: true},
+        description: {fieldName: 'store_description'}
     };
 
     return loja;
@@ -20,12 +20,12 @@ async function findById(mappedSchema){
     return await crudSupport.findById(mappedSchema);
 }
 
-logger('iniciando teste...');
+logger('running tests...');
 
-var loja = mappedSchema();
-loja.id.value = 100;
+var store = mappedSchema();
+store.id.value = 100;
 
-findById(loja).then(data =>{
+findById(store).then(data =>{
     console.log(data);
 });
 
