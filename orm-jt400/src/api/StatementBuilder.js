@@ -22,27 +22,27 @@ module.exports = {
         return (element !== '__entity' && element !== '__schema');
       });
 
+      const entityName = mappedSchema.__entity;
+
       var attributeValues = [];
 
-      for (let i = 0; i < 1; i++) { // make de first line of select statement
-        let objectAux = mappedSchema[attributes[0]];
-        attributeValues.push(objectAux); // store the attribute values to format where clause
+      const firstAttribute = mappedSchema[attributes[0]];
+      attributeValues.push(firstAttribute); // store the attribute values to format where clause
 
-       sql += _.join(['select', objectAux.fieldName], ' ');
-       sql += _.join([' ', `as "${attributes[0]}"`], ' ');
-      }
+      sql += _.join(['select', , `${entityName}.${firstAttribute.fieldName}`], ' ');
+      sql += _.join([' ', `as "${attributes[0]}"`], ' ');
 
       if (attributes.length > 1) { //format additional columns, with all attributes from mappedSchema object
         for (let i = 1; i < attributes.length; i++) {
           let objectAux = mappedSchema[attributes[i]];
           attributeValues.push(objectAux); // store the attribute values to format where clause
 
-          sql += _.join(['\n     ,', objectAux.fieldName], ' ');
+          sql += _.join([' ', '\n,',  ,`${entityName}.${objectAux.fieldName}`], ' ');
           sql += _.join([' ', ` as "${attributes[i]}"`], ' ');
         }
       }
 
-      sql += _.join([' ', '\n ', `from ${mappedSchema.__schema ? mappedSchema.__schema + '.' : ''}${mappedSchema.__entity}`], ' ');
+      sql += _.join([' ', '\n ', `from ${mappedSchema.__schema ? mappedSchema.__schema + '.' : ''}${mappedSchema.__entity}`, entityName], ' ');
       sql += _.join([' ', '\n', 'where 1 = 1'],' ');
 
       /**
@@ -55,7 +55,7 @@ module.exports = {
       var variables = [];
 
       for(var i = 0; i < primaryKeys.length; i++ ) { 
-        sql += _.join([' ', '\n  and ', `${primaryKeys[i].fieldName} = ? `], ' ');
+        sql += _.join([' ', '\n  and ', ,`${entityName}.${primaryKeys[i].fieldName} = ? `], ' ');
         variables.push(primaryKeys[i].value);
       }
 

@@ -30,6 +30,65 @@ module.exports = {
       throw error;
     } 
 
+  },
+
+  /**
+   * makes the left join relationship 
+   * @param {*} anotherSchema 
+   */
+  leftJoin(anotherSchema){
+
+    try{
+
+      this.joinValidate(anotherSchema);
+      another.leftJoin = true;
+
+      return another;
+
+    }catch(error){
+      throw error;
+    }
+
+  },
+
+  /**
+   * makes the right join relationship 
+   * @param {*} anotherSchema 
+   */
+  rightJoin(anotherSchema){
+
+    try{
+
+      this.joinValidate(anotherSchema);
+      another.rightJoin = true;
+
+      return another;
+
+    }catch(error){
+      throw error;
+    }
+
+  },
+
+  /**
+   * basic validations to prevent api errors
+   * @param {*} anotherSchema 
+   */
+  joinValidate(anotherSchema){
+    var another = anotherSchema;
+
+    if(another.__entity === undefined || another.__entity === null || another.__entity === ''){
+      throw Error(` the __entity field must be declared: ${__entity}`);
+    }
+
+    if(__referencedBy === undefined){
+      throw Error(` the __referenced object must be declared: ${__referencedBy}`);
+    }
+
+    if(__referencedBy.lenght === 0){
+      throw Error(` There's no relationship(s) defined in : ${__referencedBy}`);
+    }
+
   }
 
 }
