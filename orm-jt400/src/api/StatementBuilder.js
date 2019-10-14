@@ -16,12 +16,9 @@ module.exports = {
 
     try {
 
-      let sql = ' ';
+      var sql = ' ';
 
-      var attributes = Object.keys(mappedSchema).filter((element)=>{
-        return (element !== '__entity' && element !== '__schema');
-      });
-
+      const attributes = this.getConventionalAttributes(mappedSchema);
       const entityName = mappedSchema.__entity;
 
       var attributeValues = [];
@@ -37,13 +34,13 @@ module.exports = {
           let objectAux = mappedSchema[attributes[i]];
           attributeValues.push(objectAux); // store the attribute values to format where clause
 
-          sql += _.join([' ', '\n,',  ,`${entityName}.${objectAux.fieldName}`], ' ');
+          sql += _.join([' ', '\n,', , `${entityName}.${objectAux.fieldName}`], ' ');
           sql += _.join([' ', ` as "${attributes[i]}"`], ' ');
         }
       }
 
       sql += _.join([' ', '\n ', `from ${mappedSchema.__schema ? mappedSchema.__schema + '.' : ''}${mappedSchema.__entity}`, entityName], ' ');
-      sql += _.join([' ', '\n', 'where 1 = 1'],' ');
+      sql += _.join([' ', '\n', 'where 1 = 1'], ' ');
 
       /**
        * format where clause using ID defined on mappedSchema
@@ -54,8 +51,8 @@ module.exports = {
 
       var variables = [];
 
-      for(var i = 0; i < primaryKeys.length; i++ ) { 
-        sql += _.join([' ', '\n  and ', ,`${entityName}.${primaryKeys[i].fieldName} = ? `], ' ');
+      for (var i = 0; i < primaryKeys.length; i++) {
+        sql += _.join([' ', '\n  and ', , `${entityName}.${primaryKeys[i].fieldName} = ? `], ' ');
         variables.push(primaryKeys[i].value);
       }
 
@@ -70,6 +67,28 @@ module.exports = {
       throw error;
     }
 
+  },
+
+  /**
+   * gets conventional attributes from mappedSchema, to buil sql statements
+   * @param {*} mappedSchema 
+   */
+  getConventionalAttributes(mappedSchema) {
+    return Object.keys(mappedSchema).filter((element) => {
+      return (element !== '__entity' && element !== '__schema');
+    });
+  },
+
+  getToInnerJoinAttributes(mappedSchema) {
+    return Object.keys(mappedSchema).filter((element) => {
+      return (element.innerJoin);
+    });
+  },
+
+  getToLeftJoinAttributes(mappedSchema) {
+    return Object.keys(mappedSchema).filter((element) => {
+      return (element.leftJoin);
+    });
   }
 
 };

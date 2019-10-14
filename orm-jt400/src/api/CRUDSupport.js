@@ -28,7 +28,7 @@ module.exports = {
     catch (error) {
       console.log(error);
       throw error;
-    } 
+    }
 
   },
 
@@ -36,16 +36,16 @@ module.exports = {
    * makes the left join relationship 
    * @param {*} anotherSchema 
    */
-  leftJoin(anotherSchema){
+  leftJoin(anotherSchema) {
 
-    try{
+    try {
 
       this.joinValidate(anotherSchema);
-      another.leftJoin = true;
+      anotherSchema.leftJoin = true;
 
-      return another;
+      return anotherSchema;
 
-    }catch(error){
+    } catch (error) {
       throw error;
     }
 
@@ -55,16 +55,16 @@ module.exports = {
    * makes the right join relationship 
    * @param {*} anotherSchema 
    */
-  rightJoin(anotherSchema){
+  innerJoin(anotherSchema) {
 
-    try{
+    try {
 
       this.joinValidate(anotherSchema);
-      another.rightJoin = true;
+      anotherSchema.innerJoin = true;
 
-      return another;
+      return anotherSchema;
 
-    }catch(error){
+    } catch (error) {
       throw error;
     }
 
@@ -74,19 +74,18 @@ module.exports = {
    * basic validations to prevent api errors
    * @param {*} anotherSchema 
    */
-  joinValidate(anotherSchema){
-    var another = anotherSchema;
+  joinValidate(anotherSchema) {
 
-    if(another.__entity === undefined || another.__entity === null || another.__entity === ''){
-      throw Error(` the __entity field must be declared: ${__entity}`);
+    if (anotherSchema.__entity === undefined || anotherSchema.__entity === null || anotherSchema.__entity === '') {
+      throw Error(` the __entity field must be declared`);
     }
 
-    if(__referencedBy === undefined){
-      throw Error(` the __referenced object must be declared: ${__referencedBy}`);
+    if (anotherSchema.__referencedBy === undefined) {
+      throw Error(` the __referenced object must be declared`);
     }
 
-    if(__referencedBy.lenght === 0){
-      throw Error(` There's no relationship(s) defined in : ${__referencedBy}`);
+    if (((typeof anotherSchema.__referencedBy) === Array) && (anotherSchema.__referencedBy.length === 0)) {
+      throw Error(` There's no relationship(s) defined on __referencedBy object`);
     }
 
   }
