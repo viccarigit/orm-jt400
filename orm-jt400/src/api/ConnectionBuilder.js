@@ -18,9 +18,9 @@ module.exports = {
       }*/
 
       const config = {
-        user: 'br3pcg',
-        host: '10.16.0.162',
-        password: 'cea12345'
+        user: 'user',
+        host: '0.0.0.0',
+        password: 'passwd'
       }
 
       pool = db2AS400.pool(config);
